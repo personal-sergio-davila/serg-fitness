@@ -17,16 +17,27 @@ const getCurrentWeek = () => {
 }
 
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
 const s = prefersDark ? {
   bg: '#0a0a0a', card: '#141414', border: '#2a2a2a',
+  cardAlt: '#1a1a1a', cardAlt2: '#222',
   text: '#f0f0f0', muted: '#888', green: '#1D9E75',
   blue: '#378ADD', amber: '#EF9F27', red: '#E24B4A',
   coral: '#F0997B', purple: '#AFA9EC',
+  greenBg: '#0a2018', greenBg2: '#0a1810',
+  blueBg: '#0a1428', purpleBg: '#16102a',
+  pastWeek: '#444', barTrack: '#222',
+  inputBg: '#1a1a1a',
 } : {
   bg: '#f5f5f5', card: '#ffffff', border: '#e0e0e0',
+  cardAlt: '#f0f0f0', cardAlt2: '#e8e8e8',
   text: '#0a0a0a', muted: '#666', green: '#0F6E56',
   blue: '#185FA5', amber: '#854F0B', red: '#A32D2D',
   coral: '#993C1D', purple: '#3C3489',
+  greenBg: '#e1f5ee', greenBg2: '#d0ede4',
+  blueBg: '#e6f1fb', purpleBg: '#eeedfe',
+  pastWeek: '#bbb', barTrack: '#e0e0e0',
+  inputBg: '#f8f8f8',
 }
 
 const MacroBar = ({ label, value, target, color }) => {
@@ -40,7 +51,7 @@ const MacroBar = ({ label, value, target, color }) => {
           {Math.round(value)}g <span style={{ color: s.muted, fontWeight: 400 }}>/ {target}g</span>
         </span>
       </div>
-      <div style={{ height: 4, background: prefersDark ? '#222' : '#e0e0e0', borderRadius: 99, overflow: 'hidden' }}>
+      <div style={{ height: 4, background: s.barTrack, borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${pct}%`, background: over ? s.red : color, borderRadius: 99, transition: 'width 0.3s' }} />
       </div>
     </div>
@@ -55,7 +66,7 @@ const CalRing = ({ current, target }) => {
   const over = current > target
   return (
     <svg width={104} height={104} viewBox="0 0 104 104">
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={prefersDark ? '#222' : '#e0e0e0'} strokeWidth={stroke} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={s.barTrack} strokeWidth={stroke} />
       <circle cx={cx} cy={cy} r={r} fill="none" stroke={over ? s.red : s.green}
         strokeWidth={stroke} strokeDasharray={`${dash} ${circ}`}
         strokeLinecap="round" transform="rotate(-90 52 52)"
@@ -283,12 +294,19 @@ export default function App() {
   const waistChange = latestLog?.waist ? (latestLog.waist - STARTING_WAIST).toFixed(1) : null
 
   const card = { background: s.card, border: `0.5px solid ${s.border}`, borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 10 }
-  const tabBtn = (active) => ({ padding: '8px 14px', borderRadius: 8, border: `0.5px solid ${active ? s.green : s.border}`, background: active ? '#0a2018' : 'transparent', color: active ? s.green : s.muted, cursor: 'pointer', fontSize: 13, fontWeight: active ? 500 : 400, fontFamily: 'inherit' })
+  const tabBtn = (active) => ({
+    padding: '8px 14px', borderRadius: 8,
+    border: `0.5px solid ${active ? s.green : s.border}`,
+    background: active ? s.greenBg : 'transparent',
+    color: active ? s.green : s.muted,
+    cursor: 'pointer', fontSize: 13, fontWeight: active ? 500 : 400, fontFamily: 'inherit'
+  })
   const smBtn = { padding: '5px 12px', borderRadius: 8, border: `0.5px solid ${s.border}`, background: 'transparent', color: s.muted, cursor: 'pointer', fontSize: 12, fontFamily: 'inherit' }
-  const inp = { padding: '8px 12px', borderRadius: 8, border: `0.5px solid ${s.border}`, background: '#1a1a1a', color: s.text, fontSize: 13, fontFamily: 'inherit', width: '100%', outline: 'none' }
+  const inp = { padding: '8px 12px', borderRadius: 8, border: `0.5px solid ${s.border}`, background: s.inputBg, color: s.text, fontSize: 13, fontFamily: 'inherit', width: '100%', outline: 'none' }
+  const locBtn = (active) => ({ padding: '5px 12px', borderRadius: 8, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', border: `0.5px solid ${active ? s.green : s.border}`, background: active ? s.greenBg : 'transparent', color: active ? s.green : s.muted })
 
   const MealCard = ({ m, isCustom }) => {
-    const lc = LANE_COLORS[m.lane] || { bg: '#1a1a1a', text: s.muted }
+    const lc = LANE_COLORS[m.lane] || { bg: s.cardAlt, text: s.muted }
     const isLogged = logged.includes(m.id)
     const isExpanded = expanded === m.id
     const isMicro = microView === m.id
@@ -301,7 +319,7 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
               <span style={{ fontSize: 14, fontWeight: 500, color: s.text }}>{m.name}</span>
               <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: lc.bg, color: lc.text }}>{m.lane}</span>
-              {isCustom && <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: '#16102a', color: s.purple }}>custom</span>}
+              {isCustom && <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: s.purpleBg, color: s.purple }}>custom</span>}
             </div>
             <div style={{ display: 'flex', gap: 10, fontSize: 12, color: s.muted, flexWrap: 'wrap' }}>
               <span><b style={{ color: s.text }}>{m.cal}</b> cal</span>
@@ -313,8 +331,8 @@ export default function App() {
           <div style={{ display: 'flex', gap: 5, flexShrink: 0, flexWrap: 'wrap' }}>
             <button style={smBtn} onClick={() => { setExpanded(isExpanded ? null : m.id); setMicroView(null) }}>{isExpanded ? 'hide' : 'info'}</button>
             {microData && <button style={{ ...smBtn, color: isMicro ? s.purple : s.muted, borderColor: isMicro ? s.purple : s.border }} onClick={() => { setMicroView(isMicro ? null : m.id); setExpanded(null) }}>micros</button>}
-            <button onClick={() => toggleMeal(m.id)} style={{ ...smBtn, background: isLogged ? '#0a2018' : 'transparent', color: isLogged ? s.green : s.muted, borderColor: isLogged ? s.green : s.border }}>{isLogged ? 'logged' : 'log'}</button>
-            {isCustom && <button style={{ ...smBtn, color: s.red, borderColor: '#2a1010' }} onClick={() => deleteCustomMeal(m.id)}>del</button>}
+            <button onClick={() => toggleMeal(m.id)} style={{ ...smBtn, background: isLogged ? s.greenBg : 'transparent', color: isLogged ? s.green : s.muted, borderColor: isLogged ? s.green : s.border }}>{isLogged ? 'logged' : 'log'}</button>
+            {isCustom && <button style={{ ...smBtn, color: s.red, borderColor: s.border }} onClick={() => deleteCustomMeal(m.id)}>del</button>}
           </div>
         </div>
 
@@ -326,7 +344,7 @@ export default function App() {
                 <span>{ing.item}</span><span style={{ color: s.muted }}>{ing.qty}</span>
               </div>
             ))}
-            <div style={{ marginTop: 10, padding: '10px 12px', background: '#1a1a1a', borderRadius: 8, fontSize: 12, color: s.muted, lineHeight: 1.6 }}>
+            <div style={{ marginTop: 10, padding: '10px 12px', background: s.cardAlt, borderRadius: 8, fontSize: 12, color: s.muted, lineHeight: 1.6 }}>
               <span style={{ color: s.text, fontWeight: 500 }}>Insight — </span>{m.micros}
             </div>
           </div>
@@ -337,10 +355,10 @@ export default function App() {
             <div style={{ fontSize: 11, color: s.purple, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Micronutrients per serving</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               {MICRO_LABELS.map(ml => (
-                <div key={ml.key} style={{ background: '#1a1a1a', borderRadius: 8, padding: '8px 10px' }}>
+                <div key={ml.key} style={{ background: s.cardAlt, borderRadius: 8, padding: '8px 10px' }}>
                   <div style={{ fontSize: 11, color: s.muted, marginBottom: 2 }}>{ml.label}</div>
                   <div style={{ fontSize: 14, fontWeight: 500, color: ml.good ? s.green : s.amber }}>{microData[ml.key]}</div>
-                  <div style={{ fontSize: 10, color: '#555' }}>daily goal: {ml.goal}</div>
+                  <div style={{ fontSize: 10, color: s.muted }}>daily goal: {ml.goal}</div>
                 </div>
               ))}
             </div>
@@ -404,7 +422,7 @@ export default function App() {
               <div style={{ fontSize: 11, color: s.muted, textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 500, marginBottom: 8 }}>{title}</div>
               {meals.map(m => {
                 const sel = grocery.includes(m.id)
-                const lc = LANE_COLORS[m.lane] || { bg: '#1a1a1a', text: s.muted }
+                const lc = LANE_COLORS[m.lane] || { bg: s.cardAlt, text: s.muted }
                 return (
                   <div key={m.id} onClick={() => toggleGrocery(m.id)} style={{ ...card, cursor: 'pointer', borderColor: sel ? s.green : s.border, display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{ width: 18, height: 18, borderRadius: 4, flexShrink: 0, border: sel ? 'none' : `0.5px solid ${s.border}`, background: sel ? s.green : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -445,11 +463,11 @@ export default function App() {
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, alignItems: 'center' }}>
             <span style={{ fontSize: 12, color: s.muted }}>Location:</span>
             {['gym', 'home'].map(loc => (
-              <button key={loc} style={{ padding: '5px 12px', borderRadius: 8, fontSize: 12, cursor: 'pointer', fontFamily: 'inherit', border: `0.5px solid ${location === loc ? s.green : s.border}`, background: location === loc ? '#0a2018' : 'transparent', color: location === loc ? s.green : s.muted }} onClick={() => setLocation(loc)}>{loc}</button>
+              <button key={loc} style={locBtn(location === loc)} onClick={() => setLocation(loc)}>{loc}</button>
             ))}
           </div>
           <div style={{ fontSize: 14, fontWeight: 500, color: s.text, marginBottom: 12 }}>{selectedDay}</div>
-          <div style={{ background: '#1a1a1a', borderRadius: 8, padding: '8px 14px', marginBottom: 16, fontSize: 12, color: s.muted }}>
+          <div style={{ background: s.cardAlt, borderRadius: 8, padding: '8px 14px', marginBottom: 16, fontSize: 12, color: s.muted }}>
             5 min activation — band pull-aparts x15, glute bridges x15, arm circles
           </div>
           {EXERCISES[selectedDay].map((ex, ei) => {
@@ -464,7 +482,9 @@ export default function App() {
                     {showAlt && <div style={{ fontSize: 11, color: s.muted, marginBottom: 2 }}>Home alt: {ex.name}</div>}
                     <div style={{ fontSize: 12, color: s.muted }}>{ex.sets} sets · {ex.reps} reps</div>
                   </div>
-                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, flexShrink: 0, background: ex.home ? '#0a2018' : '#1a1010', color: ex.home ? s.green : s.coral }}>{ex.home ? 'home' : 'gym'}</span>
+                  <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, flexShrink: 0, background: ex.home ? s.greenBg : s.cardAlt, color: ex.home ? s.green : s.coral }}>
+                    {ex.home ? 'home' : 'gym'}
+                  </span>
                 </div>
                 <div style={{ fontSize: 11, color: s.muted, marginBottom: 10, lineHeight: 1.5 }}>{ex.tip}</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -510,7 +530,7 @@ export default function App() {
               </div>
               <div style={{ fontSize: 11, color: s.muted, marginBottom: 8 }}>Ingredients</div>
               {recipeIngredients.map((ing, i) => (
-                <div key={i} style={{ background: '#1a1a1a', borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
+                <div key={i} style={{ background: s.cardAlt, borderRadius: 8, padding: '10px 12px', marginBottom: 8 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 70px 32px', gap: 6, marginBottom: 4 }}>
                     <input style={{ ...inp, fontSize: 12 }} placeholder="ingredient" value={ing.name} onChange={e => updateIngredient(i, 'name', e.target.value)} />
                     <input style={{ ...inp, fontSize: 12 }} placeholder="qty" value={ing.qty} onChange={e => updateIngredient(i, 'qty', e.target.value)} />
@@ -536,7 +556,7 @@ export default function App() {
               {recipeIngredients.some(i => i.found || i.manualCal) && (() => {
                 const t = recipeCalcTotals()
                 return (
-                  <div style={{ background: '#1a1a1a', borderRadius: 8, padding: '10px 12px', marginBottom: 14 }}>
+                  <div style={{ background: s.cardAlt, borderRadius: 8, padding: '10px 12px', marginBottom: 14 }}>
                     <div style={{ fontSize: 11, color: s.muted, marginBottom: 4 }}>Estimated totals</div>
                     <div style={{ display: 'flex', gap: 12, fontSize: 13 }}>
                       <span><b style={{ color: s.text }}>{Math.round(t.cal)}</b> <span style={{ color: s.muted }}>cal</span></span>
@@ -556,7 +576,6 @@ export default function App() {
               </button>
             </div>
           )}
-
           {customMeals.length === 0 && !showRecipeBuilder && (
             <div style={{ textAlign: 'center', padding: '2rem', color: s.muted, fontSize: 13 }}>No custom meals yet. Hit "+ new meal" to build one.</div>
           )}
@@ -575,7 +594,7 @@ export default function App() {
                 const isCurrent = w === currentWeek
                 const isPast = w < currentWeek
                 return (
-                  <div key={w} style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: isCurrent ? 500 : 400, border: `0.5px solid ${isCurrent ? s.green : hasLog ? '#1a4030' : s.border}`, background: hasLog ? '#0a2018' : isCurrent ? '#0a1810' : 'transparent', color: hasLog ? s.green : isCurrent ? s.green : isPast ? '#444' : s.muted }}>
+                  <div key={w} style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: isCurrent ? 500 : 400, border: `0.5px solid ${isCurrent ? s.green : hasLog ? s.green : s.border}`, background: hasLog ? s.greenBg : isCurrent ? s.greenBg2 : 'transparent', color: hasLog ? s.green : isCurrent ? s.green : isPast ? s.pastWeek : s.muted }}>
                     {w}
                   </div>
                 )
@@ -593,7 +612,7 @@ export default function App() {
               ...(weightChange ? [{ label: 'Weight change', val: `${weightChange > 0 ? '+' : ''}${weightChange} lb`, color: parseFloat(weightChange) < 0 ? s.green : s.amber }] : []),
               ...(waistChange ? [{ label: 'Waist change', val: `${waistChange > 0 ? '+' : ''}${waistChange}"`, color: parseFloat(waistChange) < 0 ? s.green : s.amber }] : []),
             ].map((stat, i) => (
-              <div key={i} style={{ background: '#1a1a1a', borderRadius: 8, padding: '10px 12px' }}>
+              <div key={i} style={{ background: s.cardAlt, borderRadius: 8, padding: '10px 12px' }}>
                 <div style={{ fontSize: 11, color: s.muted, marginBottom: 2 }}>{stat.label}</div>
                 <div style={{ fontSize: 16, fontWeight: 500, color: stat.color || s.text }}>{stat.val}</div>
               </div>
@@ -643,9 +662,9 @@ export default function App() {
           ))}
 
           {currentWeek >= 10 && (
-            <div style={{ ...card, borderColor: s.purple, background: '#16102a', marginTop: 8 }}>
+            <div style={{ ...card, borderColor: s.purple, background: s.purpleBg, marginTop: 8 }}>
               <div style={{ fontSize: 14, fontWeight: 500, color: s.purple, marginBottom: 4 }}>Phase 2 territory</div>
-              <div style={{ fontSize: 12, color: s.muted, lineHeight: 1.6 }}>You are in week {currentWeek}. Time to evaluate and plan your next phase — a more aggressive lean mass push with updated macros and progression targets.</div>
+              <div style={{ fontSize: 12, color: s.muted, lineHeight: 1.6 }}>You are in week {currentWeek}. Time to evaluate and plan your next phase.</div>
             </div>
           )}
         </div>
