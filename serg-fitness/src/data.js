@@ -1,3 +1,4 @@
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 export const TARGETS = { cal: 2300, protein: 190, carbs: 200, fat: 65 }
 
 export const MEALS = {
@@ -148,7 +149,7 @@ export const MEALS = {
 
 export const ALL_MEALS = [...MEALS.breakfast, ...MEALS.shake, ...MEALS.dinner, ...MEALS.snack]
 
-export const LANE_COLORS = {
+export const LANE_COLORS = prefersDark ? {
   Mexican:       { bg: '#2a1f0a', text: '#FAC775' },
   Mediterranean: { bg: '#0a1f14', text: '#5DCAA5' },
   Korean:        { bg: '#0a1428', text: '#85B7EB' },
@@ -157,6 +158,15 @@ export const LANE_COLORS = {
   Chinese:       { bg: '#0a1428', text: '#85B7EB' },
   Daily:         { bg: '#1a1a1a', text: '#888780' },
   Snack:         { bg: '#1f0f0a', text: '#F0997B' },
+} : {
+  Mexican:       { bg: '#FAEEDA', text: '#854F0B' },
+  Mediterranean: { bg: '#E1F5EE', text: '#085041' },
+  Korean:        { bg: '#E6F1FB', text: '#0C447C' },
+  Japanese:      { bg: '#EEEDFE', text: '#3C3489' },
+  Spanish:       { bg: '#E1F5EE', text: '#085041' },
+  Chinese:       { bg: '#E6F1FB', text: '#0C447C' },
+  Daily:         { bg: '#F1EFE8', text: '#5F5E5A' },
+  Snack:         { bg: '#FAECE7', text: '#712B13' },
 }
 
 export const EXERCISES = {
