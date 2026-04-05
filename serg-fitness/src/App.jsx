@@ -40,7 +40,7 @@ const MacroBar = ({ label, value, target, color }) => {
           {Math.round(value)}g <span style={{ color: s.muted, fontWeight: 400 }}>/ {target}g</span>
         </span>
       </div>
-      <div style={{ height: 4, background: '#222', borderRadius: 99, overflow: 'hidden' }}>
+      <div style={{ height: 4, background: prefersDark ? '#222' : '#e0e0e0', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${pct}%`, background: over ? s.red : color, borderRadius: 99, transition: 'width 0.3s' }} />
       </div>
     </div>
@@ -55,7 +55,7 @@ const CalRing = ({ current, target }) => {
   const over = current > target
   return (
     <svg width={104} height={104} viewBox="0 0 104 104">
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#222" strokeWidth={stroke} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={prefersDark ? '#222' : '#e0e0e0'} strokeWidth={stroke} />
       <circle cx={cx} cy={cy} r={r} fill="none" stroke={over ? s.red : s.green}
         strokeWidth={stroke} strokeDasharray={`${dash} ${circ}`}
         strokeLinecap="round" transform="rotate(-90 52 52)"
