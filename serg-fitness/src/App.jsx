@@ -16,11 +16,17 @@ const getCurrentWeek = () => {
   return Math.min(Math.max(diff + 1, 1), TOTAL_WEEKS)
 }
 
-const s = {
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+const s = prefersDark ? {
   bg: '#0a0a0a', card: '#141414', border: '#2a2a2a',
   text: '#f0f0f0', muted: '#888', green: '#1D9E75',
   blue: '#378ADD', amber: '#EF9F27', red: '#E24B4A',
   coral: '#F0997B', purple: '#AFA9EC',
+} : {
+  bg: '#f5f5f5', card: '#ffffff', border: '#e0e0e0',
+  text: '#0a0a0a', muted: '#666', green: '#0F6E56',
+  blue: '#185FA5', amber: '#854F0B', red: '#A32D2D',
+  coral: '#993C1D', purple: '#3C3489',
 }
 
 const MacroBar = ({ label, value, target, color }) => {
